@@ -17,9 +17,10 @@ int main(void)
     initialize_decl_cond();
   
     init_store_data("UserStoreData", user_store_data_decl);
-    accept_message(message_submission_cond, user_information_decl, sizeof(UserInformation), message_submission_fun);
+    accept_message(message_register_fun, user_information_decl, sizeof(UserInformation), message_register_fun);
+    
 }
-    void message_submission_fun(long long session_id, void* message){
+    void message_register_fun(long long session_id, void* message){
         Cond store_data_name = {
             .operate = NONE,
             .target = "name",
@@ -66,7 +67,7 @@ int main(void)
                 free((UserStoreDate*)temp_storedata_UID.data[0]);
             } while (cnt);
             add_store_data("UserStoreData", &user_store_data);
-
+            
             free((UserInformation*)temp_storedata_name.data[0]);
 }
 void initialize_decl_cond(){
@@ -79,7 +80,7 @@ void initialize_decl_cond(){
 
     user_information_decl = object_declaration("UserInformation", 2,name, encryption_password);
 
-    Cond message_submission_2 = {
+    Cond message_register_2 = {
             .operate = NONE,
             .target = "type",
             .where_operate = EQUAL,
@@ -87,15 +88,15 @@ void initialize_decl_cond(){
             .value = "register",
             .successor = NULL
     };
-    Cond message_submission_1 = {
+    Cond message_register_1 = {
             .operate = AND,
             .target = "id",
             .where_operate = EQUAL,
             .type = OBJ,
             .value = "user",
-            .successor = &message_submission_2
+            .successor = &message_register_2
 
     };
-    message_submission_cond = &message_submission_1;
+    message_register_cond = &message_register_1;
 }
 
