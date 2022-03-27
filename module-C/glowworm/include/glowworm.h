@@ -23,7 +23,7 @@ typedef enum BaseType
     BYTE = 0, // char
     SHORT = 1, // short
     INT = 2, // int
-    LONG = 3, // long long
+    LONG = 3, // longlong
     FLOAT = 4, // float
     DOUBLE = 5, // double
     BOOLEAN =6, // bool
@@ -88,7 +88,7 @@ typedef struct Declaration
 {
     const char *name; // 字段名称
     BaseType type; // 字段类型
-    unsigned int Array_size; // 如果为0则为普通类型，否则为数组
+    unsigned int array_size; // 如果为0则为普通类型，否则为数组
     bool is_dynamic_array; // 是否为可变数组
     bool is_address; //
     struct Declaration *child_node; //
@@ -117,6 +117,7 @@ typedef struct Condition
 typedef struct MessageSendDetails
 {
     const char *id;
+    const char *type;
 }MessageSendDetails;
 
 /**
@@ -126,6 +127,7 @@ typedef struct MessageSendDetails
 typedef struct MessageAcceptDetails
 {
     const char *id;
+    const char *type;
 }MessageAcceptDetails;
 
 /**
@@ -136,7 +138,7 @@ typedef struct MessageAcceptDetails
 typedef struct StoreDataAddDetails
 {
     const unsigned long long row;
-    const char *store_data_table_nane;
+    const char *store_data_table_name;
 }StoreDataAddDetails;
 
 /**
@@ -147,7 +149,7 @@ typedef struct StoreDataAddDetails
 typedef struct StoreDataRemoveDetails
 {
     const unsigned long long row;
-    const char *store_data_table_nane;
+    const char *store_data_table_name;
 }StoreDataRemoveDetails;
 
 /**
@@ -158,7 +160,7 @@ typedef struct StoreDataRemoveDetails
 typedef struct StoreDataUpdateDetails
 {
     const unsigned long long row;
-    const char *store_data_table_nane;
+    const char *store_data_table_name;
 }StoreDataUpdateDetails;
 
 /**
@@ -169,7 +171,7 @@ typedef struct StoreDataUpdateDetails
 typedef struct StoreDataGetDetails
 {
     const unsigned long long row;
-    const char *store_data_table_nane;
+    const char *store_data_table_name;
 }StoreDataGetDetails;
 
 /**

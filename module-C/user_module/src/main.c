@@ -3,13 +3,13 @@
 //
 
 #include "main.h"
-void initialize_decl_cond();
-void message_submission_fun(long long session_id, void* message); 
+
+
 int main(void)
 {
     
     Config* config = load_config("config.cfg");
-    if (!initialize(hash("user_module"),
+    if (!initialize(string_hash("user_module"),
         find_config(config, "address"),
         find_config(config, "private_key"))) {
         return 0;
@@ -66,8 +66,7 @@ int main(void)
                 free((UserStoreDate*)temp_storedata_UID.data[0]);
             } while (cnt);
             add_store_data("UserStoreData", &user_store_data);
-            
-            free(&user_store_data);
+
             free((UserInformation*)temp_storedata_name.data[0]);
 }
 void initialize_decl_cond(){
@@ -76,10 +75,9 @@ void initialize_decl_cond(){
     name->is_dynamic_array = true;
     Decl* encryption_password = normal_declaration("encryption_password", BYTE);
     encryption_password->array_size = 32;
-    user_store_data_decl = object_declaration("UserStoreData", 3, UID, name, encryption_password);
-    
-    user_information_decl = object_declaration("UserInformation", 2, name, encryption_password);
+    user_store_data_decl = object_declaration("UserStoreDate", 3, UID, name, encryption_password);
 
+    user_information_decl = object_declaration("UserInformation", 2,name, encryption_password);
 
     Cond message_submission_2 = {
             .operate = NONE,
