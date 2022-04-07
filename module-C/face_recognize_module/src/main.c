@@ -63,7 +63,7 @@ void message_submission_fun(long long session_id,void* message)
             face_recognize_store_data->timestamp[i]=get_timestamp();
             face_recognize_store_data->is_success[i]=is_match;
             continue;
-        }else{
+        }else{                         
             temp=face_recognize_store_data->timestamp[i];
         }
     }
