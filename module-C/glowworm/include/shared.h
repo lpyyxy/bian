@@ -10,8 +10,9 @@ typedef struct SessionIdObtainUIdSrcData{
 }SessionIdObtainUIdSrcData;
  
 typedef struct SessionIdObtainUId{
-    long long u_Id;//用户和用户模块交互时产生的id
+    long long UID;
 }SessionIdObtainUId;
+
 
 
 #endif
