@@ -8,10 +8,10 @@
 #include <stdio.h>
 #include"shared.h"
 #include"util.h"
-typedef struct a{
-	unsigned int b_size;
-	string* b;
-}usergroup;
+typedef struct getusergroup_permission{
+	unsigned int permission_size;
+	String* str_permission;
+}getusergroup_permission;
 typedef struct Permission {
 	unsigned permission_size;
 	long long *permission;
@@ -74,10 +74,6 @@ typedef struct OtherData {
 	unsigned int otherData_size;
 	Permission* otherData;
 }OtherData;
-typedef struct UserGroupData {
-	unsigned int userGroupData_size;
-	Permission* userGroupData;
-}UserGroupData;
 
 static Decl *permission_store_data_decl;
 
@@ -93,6 +89,7 @@ static Decl* user_permission_add_decl;
 static Decl* user_permission_get_decl;
 static Decl* user_permission_remove_decl;
 static Decl* user_permission_other_decl;
+static Map user_group;
 void initialize_decl_cond();
 bool message_accept();
 bool message_sent();

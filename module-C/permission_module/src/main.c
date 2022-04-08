@@ -22,11 +22,28 @@ int main(void)
     block_monitor(base_event_id, store_get);
     block_monitor(base_event_id, store_remove);
     block_monitor(base_event_id, other_data);
-    UserGroupData *usergroup_data= (UserGroupData*)get_config("UserStoreData", permission_store_data_decl);
-
+    getusergroup_permission *teachergroup_data= (getusergroup_permission*)get_config("Teacher", permission_store_data_decl);
+    getusergroup_permission *subjectgroup_data = (getusergroup_permission*)get_config("Subject", permission_store_data_decl);
+    getusergroup_permission *administrator_data = (getusergroup_permission*)get_config("Administrator", permission_store_data_decl);
     return 0;
-}
+} 
+Permission* change_string(String *str) {
+    int k = 0, j = 0, l=0;
+    Permission* temp_permission;
+    for (int i = 0; i < str->value_length; i++) {
+        if (str->value[i] != '/') {
+            k++;
+        }
+        else {
+            temp_permission->permission[j++] = hash_array(str->value[l], k);
+            k = 0;
+            l += k;
 
+        }
+    }
+        temp_permission->permission_size = j;
+        return temp_permission;
+}
 bool have_permission(Permission permission, BaseEventID baseEventId, Details details) {
     long long event_1;
     long long event_2;
@@ -85,28 +102,28 @@ bool have_permission(Permission permission, BaseEventID baseEventId, Details det
         return true;
         break;
     case STORE_DATA_ADD: 
-        if ((permission.permission_size > 2 && permission.permission[2] != hash_string(details.storeDataAddDetails.store_data_table_nane)) &&
+        if ((permission.permission_size > 2 && permission.permission[2] != hash_string(details.storeDataAddDetails.store_data_table_name)) &&
             (permission.permission_size > 3 && permission.permission[3] != hash_string(details.storeDataAddDetails.row))) {
             return false;
         }
         return true;
         break;
     case STORE_DATA_REMOVE:
-        if ((permission.permission_size > 2 && permission.permission[2] != hash_string(details.storeDataRemoveDetails.store_data_table_nane)) &&
+        if ((permission.permission_size > 2 && permission.permission[2] != hash_string(details.storeDataRemoveDetails.store_data_table_name)) &&
             (permission.permission_size > 3 && permission.permission[3] != hash_string(details.storeDataRemoveDetails.row))) {
             return false;
         }
         return true;
         break;
     case STORE_DATA_UPDATE:
-        if ((permission.permission_size > 2 && permission.permission[2] != hash_string(details.storeDataUpdateDetails.store_data_table_nane)) &&
+        if ((permission.permission_size > 2 && permission.permission[2] != hash_string(details.storeDataUpdateDetails.store_data_table_name)) &&
             (permission.permission_size > 3 && permission.permission[3] != hash_string(details.storeDataUpdateDetails.row))) {
             return false;
         }
         return true;
         break;
     case STORE_DATA_GET:
-        if ((permission.permission_size > 2 && permission.permission[2] != hash_string(details.storeDataGetDetails.store_data_table_nane)) &&
+        if ((permission.permission_size > 2 && permission.permission[2] != hash_string(details.storeDataGetDetails.store_data_table_name)) &&
             (permission.permission_size > 3 && permission.permission[3] != hash_string(details.storeDataGetDetails.row))) {
             return false;
         }
@@ -267,6 +284,24 @@ bool other_data(long long session_id, Details details) {
         }
     }
     return false;
+}
+//判断用户组里权限
+bool usergroup_permission(long long session_id, Details details) {
+    SessionIdObtainUIdSrcData sessionIdObtainUIdSrcData = {
+           .session_id = session_id
+    };
+    Cond store_data_eigenvalues = {
+            .operate = NONE,
+            .target = "UID",
+            .where_operate = EQUAL,
+            .type = LONG,
+            .value = (char*)&(((SessionIdObtainUId*)get_module_data(string_hash("user_module"),
+                                                                      "SessionIdObtainUID",
+                                                                      &sessionIdObtainUIdSrcData,
+                                                                      sizeof(sessionIdObtainUIdSrcData)))
+                                                                              ->UID),
+            .successor = NULL
+    };
 }
 //初始化数据库
 void initialize_decl_cond(){
