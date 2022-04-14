@@ -17,60 +17,9 @@ int main(void)
     initialize_decl_cond();
   
     init_store_data("UserStoreData", user_store_data_decl);
-    accept_message(message_register_cond, user_information_decl, sizeof(UserInformation), message_register_fun);
-    accept_message(message_login_cond, user_information_decl, sizeof(UserInformation), message_login_fun);
-    accept_message(message_cancellation_cond, user_information_decl, sizeof(UserInformation), message_login_fun);
-}
-    void message_cancellation_fun(long long session_id, void* message){
-
+    accept_message(message_register_fun, user_information_decl, sizeof(UserInformation), message_register_fun);
     
-    }
-    void message_login_fun(long long session_id, void* message) {
-        Cond store_data_name = {
-            .operate = NONE,
-            .target = "name",   
-            .where_operate = EQUAL,
-            .type = OBJ,
-            .value = ((UserInformation*)message)->name,
-            .successor = NULL
-
-        };
-        
-        StoreData temp_store_data;
-        if (!((temp_store_data = get_store_data("UserStoreData", &store_data_name, user_store_data_decl, sizeof(UserStoreDate))).data_size)) {
-            return;
-        }
-       
-        for (int i = 0; i < 32; i++) {
-            if (((UserInformation*)message)->encryption_password[i] != ((UserStoreDate*)temp_store_data.data[0])->encryption_password[i])
-                 return;
-        }
-        long long* UID = ((UserStoreDate*)temp_store_data.data[0])->UID;
-
-        map_put(sid_to_uid_map, &session_id, UID);
-
-        map_put(uid_to_sid_map, UID, &session_id);
-        if (!map_exist(uid_to_sid_map, &UID)) {
-            sid_to_uid_map->map_datum->value = init_arraylist(sizeof(long long));
-        }
-         
-        add_arraylist(sid_to_uid_map->map_datum->value, map_get(uid_to_sid_map, UID));
-
-        put_module_data("SessionIdObtainUID", sizeof(SessionIdObtainUId), SessionIdObtainUID);
-        
-        IsSuccess is_success = {
-            .id = to_string("user"),
-            .type = to_string("login"),
-            .response = true
-        };
-        send_message(session_id, is_success_decl, &is_success);
-    }
-    SessionIdObtainUId SessionIdObtainUID(SessionIdObtainUIdSrcData* sessionIdObtainUIdSrcData) {
-        SessionIdObtainUId sessionIdObtainUId = {
-            .UID = map_get(sid_to_uid_map, &sessionIdObtainUIdSrcData->session_id)
-        };
-        return sessionIdObtainUId;
-    }
+}
     void message_register_fun(long long session_id, void* message){
         Cond store_data_name = {
             .operate = NONE,
@@ -133,14 +82,6 @@ void initialize_decl_cond(){
 
     user_information_decl = object_declaration("UserInformation", 2,name, encryption_password);
 
-    Decl* value = normal_declaration("value", BYTE);
-    value->is_dynamic_array = true;
-    Decl* id = object_declaration("id", 1, value);
-    Decl* type = object_declaration("type", 1, value);
-    Decl* response = normal_declaration("response", BOOLEAN);
-    is_success_decl = object_declaration("is_success", 3, id, type, response);
-
-
     Cond message_register_2 = {
             .operate = NONE,
             .target = "type",
@@ -158,72 +99,6 @@ void initialize_decl_cond(){
             .successor = &message_register_2
 
     };
-
-    Cond message_login_2 = {
-           .operate = NONE,
-           .target = "type",
-           .where_operate = EQUAL,
-           .type = OBJ,
-           .value = "login",
-           .successor = NULL
-    }; 
-
-    Cond message_login_1 = {
-           .operate = AND,
-           .target = "id",
-           .where_operate = EQUAL,
-           .type = OBJ,
-           .value = "user",
-           .successor = &message_login_2
-
-    };
-
-    Cond message_cancellation_2 = {
-          .operate = NONE,
-          .target = "type",
-          .where_operate = EQUAL,
-          .type = OBJ,
-          .value = "cancellation",
-          .successor = NULL
-    };
-
-    Cond message_cancellation_1 = {
-           .operate = AND,
-           .target = "id",
-           .where_operate = EQUAL,
-           .type = OBJ,
-           .value = "user",
-           .successor = &message_cancellation_2
-
-    };
     message_register_cond = &message_register_1;
-    message_login_cond = &message_login_1;
-    message_cancellation_cond = &message_cancellation_1;
 }
 
-void initialize_map() 
-{
-    sid_to_uid_map=malloc(sizeof(Map));
-    sid_to_uid_map->equals = sid_to_uid_equals;
-    sid_to_uid_map->hash = sid_to_uid_hash;
-    
-    sid_to_uid_map = malloc(sizeof(Map));
-    uid_to_sid_map->equals = uid_to_sid_equals;
-    uid_to_sid_map->hash = uid_to_sid_hash;
-}
-
-long long sid_to_uid_hash(void* key) {
-    return *((long long*)key);
-}
-
-bool sid_to_uid_equals(void* tar_key, void* src_key) {
-    return  *(long long*)tar_key == *(long long*)src_key;
-}
-
-long long uid_to_sid_hash(void* key) {
-    return *((long long*)key);
-}
-
-bool uid_to_sid_equals(void* tar_key, void* src_key) {
-    return  *(long long*)tar_key == *(long long*)src_key;
-}
