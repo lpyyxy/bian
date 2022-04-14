@@ -377,15 +377,14 @@ bool map_remove(Map *map,void *key,void *value){
         }
     }
 }
-
 typedef struct ArrayList {
     void* array;
     unsigned char type_size;
     int length;
 }ArrayList;
 
-extern ArrayList* init_arraylist(unsigned char size) { 
-    ArrayList* arraylist=malloc(sizeof(arraylist));
+extern ArrayList* init_arraylist(unsigned char size) {
+    ArrayList* arraylist = malloc(sizeof(arraylist));
     arraylist->array = malloc(size);
     arraylist->type_size = size;
     arraylist->length = 0;
@@ -403,11 +402,11 @@ void add_arraylist(ArrayList* arraylist, void* data) {
     arraylist->length++;
 }
 
-extern void* get_arraylist(ArrayList* arraylist,int index){
+extern void* get_arraylist(ArrayList* arraylist, int index) {
     return arraylist->array + index * arraylist->type_size;
 }
 
-extern void remove_arraylist(ArrayList* arraylist,int index){
+extern void remove_arraylist(ArrayList* arraylist, int index) {
     memcpy(arraylist->array + index * arraylist->type_size, arraylist->array + (index + 1) * arraylist->type_size, arraylist->length - index);
     arraylist->length--;
 }

@@ -13,6 +13,17 @@ typedef struct SessionIdObtainUId{
     long long UID;
 }SessionIdObtainUId;
 
+typedef struct TransmitUID {
+    long long UID;
+}TransmitUID;
 
+typedef struct NotificationMessage {
+    long long UID;
+    unsigned int message_size;
+    void* message;
+    char* id;
+    char* type;
+    long long timestamp;
+}NotificationMessage;
 
 #endif
