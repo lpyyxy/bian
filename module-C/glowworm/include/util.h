@@ -269,7 +269,6 @@ typedef struct Map
     MapDatum *map_datum;
 }Map;
 
-
 extern void* map_get(Map *map,void *key){
     MapDatum *temp=map->map_datum;
     for(;;){

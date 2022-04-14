@@ -15,6 +15,12 @@ int main(void)
     }
     initialize_decl_cond();
     //初始化数据库
+
+    getusergroup_permission* teacher_group_data = (getusergroup_permission*)get_config("Teacher", permission_store_data_decl);
+    getusergroup_permission* subject_group_data = (getusergroup_permission*)get_config("Subject", permission_store_data_decl);
+    getusergroup_permission* administrator_group_data = (getusergroup_permission*)get_config("Administrator", permission_store_data_decl);
+    ArrayList StoragePermission;
+    init_arraylist()
     init_store_data("PermissionStoreData", permission_store_data_decl);
     block_monitor(base_event_id, message_accept);
     block_monitor(base_event_id, message_sent);
@@ -22,11 +28,24 @@ int main(void)
     block_monitor(base_event_id, store_get);
     block_monitor(base_event_id, store_remove);
     block_monitor(base_event_id, other_data);
-    getusergroup_permission *teachergroup_data= (getusergroup_permission*)get_config("Teacher", permission_store_data_decl);
-    getusergroup_permission *subjectgroup_data = (getusergroup_permission*)get_config("Subject", permission_store_data_decl);
-    getusergroup_permission *administrator_data = (getusergroup_permission*)get_config("Administrator", permission_store_data_decl);
-    return 0;
+
+    func(teacher_group_data, StoragePermission);
+    Map* TeacherGroupData;
+    //Map SubjectGroupData;
+    //Map AdministratorGroupData;
+    if (!map_exist(TeacherGroupData, hash_string("teacher"))) {
+        map_put(TeacherGroupData, hash_string("teacher"), &StoragePermission);
+    }
+
+        return 0;
 } 
+ void func(getusergroup_permission *to_permission,ArrayList go_list) {
+     init_arraylist(sizeof(Permission));
+     for (int i = 0; i < to_permission->permission_size; i++) {
+         temp_permission[i].permission = change_string(to_permission->str_permission);
+     }
+     go_list.array = &temp_permission;
+}
 Permission* change_string(String *str) {
     int k = 0, j = 0, l=0;
     Permission* temp_permission;
@@ -36,8 +55,8 @@ Permission* change_string(String *str) {
         }
         else {
             temp_permission->permission[j++] = hash_array(str->value[l], k);
+            l += k+1;
             k = 0;
-            l += k;
 
         }
     }
@@ -152,9 +171,14 @@ bool message_accept(long long session_id,Details details) {
             .successor = NULL
     };
      MessageAccept* accept_permission=(get_store_data("PermissionStoreData",&store_data_eigenvalues,user_permission_accept_decl,sizeof(MessageAccept)).data[0]);
-     j = accept_permission->messageAccept_size;
     for (int i = 0; i < accept_permission->messageAccept_size; i++) {
         if (have_permission(accept_permission->messageAccept[i], message_accept, details)) {
+            return true;
+        }
+    }
+
+    for (int i = 0; i < accept_permission->messageAccept_size; i++) {
+        if () {
             return true;
         }
     }
@@ -321,20 +345,20 @@ void initialize_decl_cond(){
     Decl* otherData = normal_declaration("otherData", LONG);
     otherData->is_dynamic_array = true;
     Decl* usergroup_id = normal_declaration("usergroup_id", LONG);
-
+    /**
     Decl* b = normal_declaration("b",OBJ );
     b->name = "value";
     b->type = "char";
     b->is_dynamic_array = true;
     Decl* a = object_declaration("a", 1, b);
-
+    */
     permission_store_data_decl = object_declaration("PermissionStoreData", 9, UID, messageSend, messageAccept, storeDataAdd, storeDataRemove, storeDataUpdate, storeDataGet, otherData);
-    user_permission_accept_decl = object_declaration("UserAccpetPermission",2,UID, messageAccept);
-    user_permission_send_decl = object_declaration("UserSendPermission", 2, UID, messageSend);
-    user_permission_add_decl = object_declaration("UserAddPermission", 2, UID, storeDataAdd);
-    user_permission_remove_decl = object_declaration("UserRemovePermission", 2, UID, storeDataRemove);
-    user_permission_get_decl = object_declaration("UserGetPermission", 2, UID, storeDataGet);
-    user_permission_other_decl = object_declaration("UserOtherPermission", 2, UID, otherData);
+    user_permission_accept_decl = object_declaration("UserAccpetPermission",2, usergroup_id, messageAccept);
+    user_permission_send_decl = object_declaration("UserSendPermission", 2, usergroup_id, messageSend);
+    user_permission_add_decl = object_declaration("UserAddPermission", 2, usergroup_id, storeDataAdd);
+    user_permission_remove_decl = object_declaration("UserRemovePermission", 2, usergroup_id, storeDataRemove);
+    user_permission_get_decl = object_declaration("UserGetPermission", 2, usergroup_id, storeDataGet);
+    user_permission_other_decl = object_declaration("UserOtherPermission", 2, usergroup_id, otherData);
 
     Cond message_initialize_2 = {
             .operate = NONE,

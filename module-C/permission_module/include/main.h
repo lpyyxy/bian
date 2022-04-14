@@ -12,6 +12,7 @@ typedef struct getusergroup_permission{
 	unsigned int permission_size;
 	String* str_permission;
 }getusergroup_permission;
+
 typedef struct Permission {
 	unsigned permission_size;
 	long long *permission;
@@ -45,32 +46,32 @@ typedef struct PermissionStoreData{
 }PermissionStoreData;
 
 typedef struct MessageAccept {
-	long long UID;
+	long long usergroup_id;
 	unsigned int messageAccept_size;
 	Permission* messageAccept;
 }MessageAccept;
 typedef struct MessageSend {
-	long long UID;
+	long long usergroup_id;
 	unsigned int messageSend_size;
 	Permission* messageSend;
 }MessageSend;
 typedef struct StoreDataAdd {
-	long long UID;
+	long long usergroup_id;
 	unsigned int storeDataAdd_size;
 	Permission* storeDataAdd;
 }StoreDataAdd;
 typedef struct StoreDataRemove {
-	long long UID;
+	long long usergroup_id;
 	unsigned int storeDataRemove_size;
 	Permission* storeDataRemove;
 }StoreDataRemove;
 typedef struct StoreDataGet {
-	long long UID;
+	long long usergroup_id;
 	unsigned int storeDataGet_size;
 	Permission* storeDataGet;
 }StoreDataGet;
 typedef struct OtherData {
-	long long UID;
+	long long usergroup_id;
 	unsigned int otherData_size;
 	Permission* otherData;
 }OtherData;
@@ -89,7 +90,7 @@ static Decl* user_permission_add_decl;
 static Decl* user_permission_get_decl;
 static Decl* user_permission_remove_decl;
 static Decl* user_permission_other_decl;
-static Map user_group;
+static Permission* temp_permission;
 void initialize_decl_cond();
 bool message_accept();
 bool message_sent();
