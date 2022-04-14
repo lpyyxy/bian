@@ -377,5 +377,41 @@ bool map_remove(Map *map,void *key,void *value){
         }
     }
 }
+typedef struct ArrayList {
+    void* array;
+    unsigned char type_size;
+    int length;
+}ArrayList;
 
+extern ArrayList* init_arraylist(unsigned char size) {
+    ArrayList* arraylist = malloc(sizeof(arraylist));
+    arraylist->array = malloc(size);
+    arraylist->type_size = size;
+    arraylist->length = 0;
+    return arraylist;
+}
+
+void add_arraylist(ArrayList* arraylist, void* data) {
+    if (!(arraylist->length & arraylist->length - 1)) {
+        void* temp_arraylist = malloc(arraylist->length * arraylist->type_size * 2);
+        memcpy(temp_arraylist, arraylist->array, arraylist->length);
+        free(arraylist->array);
+        arraylist->array = temp_arraylist;
+    }
+    memcpy(((arraylist->array) + (arraylist->length * arraylist->type_size)), data, arraylist->type_size);
+    arraylist->length++;
+}
+
+extern void* get_arraylist(ArrayList* arraylist, int index) {
+    return arraylist->array + index * arraylist->type_size;
+}
+
+extern void remove_arraylist(ArrayList* arraylist, int index) {
+    memcpy(arraylist->array + index * arraylist->type_size, arraylist->array + (index + 1) * arraylist->type_size, arraylist->length - index);
+    arraylist->length--;
+}
+
+extern void updata_arraylist(ArrayList* arraylist, int index, void* data) {
+    memcpy(arraylist->array + index * arraylist->type_size, data, arraylist->type_size);
+}
 #endif
